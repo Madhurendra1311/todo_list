@@ -3,6 +3,8 @@ import { useHistory } from "react-router-dom";
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteIcon from '@material-ui/icons/Delete';
 import styles from "./app.module.css";
+import ProgressChart from "./ProgressChart"
+import { Container, Row, Col, Nav, Navbar, FormControl, InputGroup, Button } from "react-bootstrap"
 
 
 export default function Todolist() {
@@ -17,7 +19,7 @@ export default function Todolist() {
     const [completedCount, setCompletedCount] = useState(0)
 
     useEffect(() => {
-        if(!window.localStorage.getItem("token")){
+        if (!window.localStorage.getItem("token")) {
             history.push("/")
         }
     }, [])
@@ -53,11 +55,11 @@ export default function Todolist() {
     const handleDeleteTask = (id) => {
         let filteredTask = taskList.filter(item => item.id !== id)
         let deletedTask = taskList.filter(item => item.id === id)[0].subtask
-        for(let i = 0; i < deletedTask.length; i++){
-            if(deletedTask[i].isCompleted){
+        for (let i = 0; i < deletedTask.length; i++) {
+            if (deletedTask[i].isCompleted) {
                 setCompletedCount((completedCount) => completedCount - 1)
             }
-            else{
+            else {
                 setTodoCount((todoCount) => todoCount - 1)
             }
         }
@@ -131,86 +133,139 @@ export default function Todolist() {
         }
         setTaskList(tempTaskList)
     }
+    const handleRemoveToken = () => {
+        if (!window.localStorage.removeItem("token")) {
+            history.push("/")
+        }
+    }
+
+    let chartDatasets = [
+        {
+            data: [
+                todoCount,
+                completedCount
+            ],
+            backgroundColor: [
+                '#FDBF00',
+                '#FA4570',
+            ]
+        }
+    ]
 
     console.log(todoCount, completedCount);
 
     return (
         <>
-        <div style={{background:'black', width:'100%', height:'100vh', paddingTop:'3%'}}>
+            <Navbar bg="dark" variant="dark">
+                <Navbar.Brand href="#home">Todos</Navbar.Brand>
+                <Nav className="ml-auto">
+                    <Nav.Link onClick={handleRemoveToken} >Logout</Nav.Link>
+                </Nav>
+            </Navbar>
+            <Container fluid>
+                <Row>
+                    <Col style={{ margin: "auto" }} lg={6}>
+                        <div >
+                            <div >
+                                <div>
+                                    <InputGroup className="mb-3">
+                                        <FormControl
+                                            type="text" onChange={handleTaskName} value={taskName} placeholder="Add todo...."
+                                            aria-label="Recipient's username"
+                                            aria-describedby="basic-addon2"
+                                        />
+                                        <InputGroup.Append>
+                                            {
+                                                activeTaskIdEdit === null ?
+                                                    <Button variant="outline-secondary" onClick={handleAddTaskSubmit}>Add Todo</Button>
+                                                    :
+                                                    <Button variant="outline-secondary" onClick={handleEditTaskSubmit}>Edit Todo</Button>
+                                            }
+                                        </InputGroup.Append>
+                                    </InputGroup>
+                                </div>
+                                {
+                                    taskList?.map(task => {
+                                        return (
+                                            <div key={task.id}>
+                                                <div style={{ background: "#C0C0C0" }}>
+                                                    <p >{task.name} <EditIcon style={{ marginLeft: "400px" }} onClick={() => handleEditTask(task.id)} />
+                                                        <DeleteIcon onClick={() => handleDeleteTask(task.id)} />
+                                                        <button className={styles.button} onClick={() => handleSubTaskFlag(task.id)}>Add Sub Task</button>
+                                                    </p>
+                                                </div>
 
-      
-        <div style={{margin:'auto', border:'1px solid black', height:'45vh', width:'35%', textAlign:'center',padding:'40px 20px', borderRadius:'15px',background:'#FF9100', color:'black'}}>
-        <h1>Todos</h1>
-        <div style={{display:"flex",width: "35px", height:"35px", paddingLeft:"100px"}}>
-            <input type="text" onChange={handleTaskName} value={taskName} placeholder="Add todo...."  />
-            
-            {
-                activeTaskIdEdit === null ?
-                    <div >
-                        <button className={styles.button} onClick={handleAddTaskSubmit}>Add Todo</button>
-                    </div>
-                    :
-                    <div>
-                        <button className={styles.button} onClick={handleEditTaskSubmit}>Edit Todo</button>
-                    </div>
-            }
-</div>
-            {
-                taskList?.map(task => {
-                    return (
-                        <div key={task.id}>
-                            <div style={{height: "70px", width: "170px", paddingBottom: "30px", background:'white', marginLeft:'160px', borderRadius:'5px'}}> <br/>
-                                <p style={{textAlign:'left',paddingLeft:'5px'}}>{task.name} <EditIcon style={{marginLeft:'58px',paddingTop:'5px'}} onClick={() => handleEditTask(task.id)}/> <DeleteIcon onClick={() => handleDeleteTask(task.id)}/></p>
+                                                <div><br />
+                                                    {
+                                                        activeTaskIdSubtask === task.id ?
+                                                            <div >
+                                                                {
+                                                                    activeSubtaskIdEdit === null ?
+                                                                        <form onSubmit={handleAddSubtask}>
+                                                                            <input type="text" onChange={handleSubtaskName} value={subTaskName} placeholder="Add subtask...." style={{ width: "620px" }} />
+                                                                        </form>
+                                                                        :
+                                                                        <form onSubmit={handleEditSubtask}>
+                                                                            <input type="text" onChange={handleSubtaskName} value={subTaskName} placeholder="Add subtask...." style={{ width: "620px" }} />
+                                                                        </form>
+                                                                }
+                                                            </div>
+                                                            :
+                                                            null
+                                                    }
+                                                    <div ><br />
+                                                        {
+                                                            task.subtask?.map(_subtask => {
+                                                                if (_subtask.isCompleted) {
+                                                                    return (
+                                                                        <div key={_subtask.id}>
+                                                                            <div style={{ background: "grey", color: "white" }}>
+                                                                                <p>{_subtask.name}</p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <button className={styles.button1} onClick={() => handleSubtaskEdit(_subtask.id, task.id)}>Edit</button>
+                                                                                <button className={styles.button3} onClick={() => handleSubtaskDelete(_subtask.id, task.id)}>Delete</button>
+                                                                                <button className={styles.button2} onClick={() => handleSubtaskMark(_subtask.id, task.id)}>Mark as Incomplete</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                                else {
+                                                                    return (
+                                                                        <div key={_subtask.id}>
+                                                                            <div style={{ background: "grey", color: "white" }}>
+                                                                                <p>{_subtask.name}</p>
+                                                                            </div>
+                                                                            <div>
+                                                                                <button className={styles.button1} onClick={() => handleSubtaskEdit(_subtask.id, task.id)}>Edit</button>
+                                                                                <button className={styles.button3} onClick={() => handleSubtaskDelete(_subtask.id, task.id)}>Delete</button>
+                                                                                <button className={styles.button2} onClick={() => handleSubtaskMark(_subtask.id, task.id)}>Mark as Complete</button>
+                                                                            </div>
+                                                                        </div>
+                                                                    )
+                                                                }
+                                                            })
+                                                        }
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        )
+                                    })
+                                }
+
+
                             </div>
-                            
-                            <button style={{width: "100px", height:"30px"}} className={styles.button} onClick={() => handleSubTaskFlag(task.id)}>Add Sub Task</button>
-                            {
-                                activeTaskIdSubtask === task.id ?
-                                    <div>
-                                        {
-                                            activeSubtaskIdEdit === null ?
-                                                <form onSubmit={handleAddSubtask}>
-                                                    <input type="text" onChange={handleSubtaskName} value={subTaskName} />
-                                                </form>
-                                                :
-                                                <form onSubmit={handleEditSubtask}>
-                                                    <input type="text" onChange={handleSubtaskName} value={subTaskName} />
-                                                </form>
-                                        }
-                                    </div>
-                                    :
-                                    null
-                            }
-                            {
-                                task.subtask?.map(_subtask => {
-                                    if (_subtask.isCompleted) {
-                                        return (
-                                            <div key={_subtask.id}>
-                                                <h4>{_subtask.name}</h4>
-                                                <button onClick={() => handleSubtaskEdit(_subtask.id, task.id)}>Edit</button>
-                                                <button onClick={() => handleSubtaskDelete(_subtask.id, task.id)}>Delete</button>
-                                                <button onClick={() => handleSubtaskMark(_subtask.id, task.id)}>Mark as Incomplete</button>
-                                            </div>
-                                        )
-                                    }
-                                    else {
-                                        return (
-                                            <div key={_subtask.id}>
-                                                <h4>{_subtask.name}</h4>
-                                                <button onClick={() => handleSubtaskEdit(_subtask.id, task.id)}>Edit</button>
-                                                <button onClick={() => handleSubtaskDelete(_subtask.id, task.id)}>Delete</button>
-                                                <button onClick={() => handleSubtaskMark(_subtask.id, task.id)}>Mark as Complete</button>
-                                            </div>
-                                        )
-                                    }
-                                })
-                            }
                         </div>
-                    )
-                })
-            }
-        </div>
-        </div>
+                    </Col>
+                    <Col lg={6}>
+                        {
+                            <div className="">
+                                <ProgressChart todo={todoCount} completed={completedCount} />
+                            </div>
+                        }
+                    </Col>
+                </Row>
+            </Container>
         </>
     )
 }
