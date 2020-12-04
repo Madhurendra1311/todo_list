@@ -18,6 +18,7 @@
   <li>MARK AS INCOMPLETE</li>
   <li>PIE CHART(COMPLETED VS INCOMPLETE)</li>
 </ul>
+<br/>
   # (Technical Stuffs Included)
   <ul>
     <li>HTML</li>
