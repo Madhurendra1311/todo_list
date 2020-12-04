@@ -1,2 +1,16 @@
-#Todo List
-  ### Features
+###Todo List
+##LOGIN
+  ## Features
+  ADD
+  EDIT
+  UPDATE
+  DELETE
+  #SUBTASK
+  ADD
+  EDIT
+  UPDATE
+  DELETE
+  MARK AS COMPLETED
+  MARK AS INCOMPLETE
+  PIE CHART(COMPLETED VS INCOMPLETE)
+  
