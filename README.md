@@ -19,5 +19,11 @@
   <li>PIE CHART(COMPLETED VS INCOMPLETE)</li>
 </ul>
   # (Technical Stuffs Included)
-  -gg
+  <ul>
+    <li>HTML</li>
+    <li>CSS</li>
+    <li>BOOTSTRAP</li>
+    <li>MATERIAL-UI</li>
+    <li>REACT(REACT HOOKS)</li>
+  </ul>
   
