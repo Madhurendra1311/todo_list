@@ -22,7 +22,7 @@ export default function Todolist() {
         if (!window.localStorage.getItem("token")) {
             history.push("/")
         }
-    }, [])
+    }, [history])
 
     const handleTaskName = (e) => {
         setTaskName(e.target.value)
@@ -139,18 +139,6 @@ export default function Todolist() {
         }
     }
 
-    let chartDatasets = [
-        {
-            data: [
-                todoCount,
-                completedCount
-            ],
-            backgroundColor: [
-                '#FDBF00',
-                '#FA4570',
-            ]
-        }
-    ]
 
     console.log(todoCount, completedCount);
 

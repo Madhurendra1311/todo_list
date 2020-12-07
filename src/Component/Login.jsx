@@ -49,8 +49,8 @@ export default function SignIn() {
             email: email,
             password: password
         }
-        axios.
-            post("https://reqres.in/api/login", payload)
+        axios
+            .post("https://reqres.in/api/login", payload)
             .then(res => {
                 if (res.data.token) {
                     window.localStorage.setItem("token", res.data.token)

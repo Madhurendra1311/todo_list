@@ -2,9 +2,9 @@ import React, { Component } from 'react'
 import { Pie } from 'react-chartjs-2';
 
 export default class ProgressChart extends Component {
-    constructor(props) {
-        super(props)
-    }
+    // constructor(props) {
+    //     super(props)
+    // }
     
     render() {
         console.log(this.props);
